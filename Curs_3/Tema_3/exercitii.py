@@ -7,9 +7,9 @@ def my_function(*args, **kwargs):
         try:
             converted_value = float(value)
             s += converted_value
-        except ValueError as e:
+        except ValueError:
             continue
-        except TypeError as e:
+        except TypeError:
             continue
     return s
 
@@ -19,7 +19,7 @@ def is_integer():
         number = input("Enter a number: ")
         int_number = int(number)
         return int_number
-    except ValueError as e:
+    except ValueError:
         return 0
 
 
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     print(my_function(1, 5.2, -3, "abc", [12, 56, "cad"]))
     print(my_function())
     print(my_function(2, 4, "abc", param_1=2))
-    # print(is_integer())
+    print(is_integer())
     print(recursive_sum(10))
     print(recursive_even_sum(10))
     print(recursive_odd_sum(10))
