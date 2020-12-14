@@ -1,29 +1,55 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 URL = "https://lpf.ro/liga-1"
 page = requests.get(URL)
 
 soup = BeautifulSoup(page.content, "html.parser")
-# print(soup)
 results_table = soup.find(id="clasament_ajax")
-# print(results_table.prettify())
 team_rows = results_table.find_all(class_="echipa_row")
-# print(team_rows)
 teams = []
 for team in team_rows:
-    # print(team, end="\n" * 2)
     team_cel = team.find("td", class_="echipa")
     team_name = team_cel.find("a").text.strip()
     team_position = team.find("td", class_="poz").text.strip()
     team_points = team.find("td", class_="puncte").text.strip()
-
-    # print(team_name)
-    # print(team_position)
+    # added the number of matches played by every team
+    team_played_games = team.find_all("td")[4].text.strip()
+    # added the goal average
+    goal_average_team = team.find_all("td")[11].text.strip()
     teams.append({
         "name": team_name,
         "position": team_position,
         "points": team_points,
+        "played games": team_played_games,
+        "goal average": goal_average_team
     })
 
-print(*teams, sep='\n')
+# print(*teams, sep='\n')
+# writing in a csv file
+with open("football.csv", "w") as f:
+    for team in teams:
+        writer = csv.DictWriter(f, team.keys())
+        writer.writerow(team)
+
+# append to a csv file
+with open("football.csv", "a") as f:
+    new_team = {
+        "name": "FC Petrolul Ploiesti",
+        "position": 2,
+        "points": 25,
+        "played games": 12,
+        "goal average": 6
+    }
+    writer = csv.DictWriter(f, new_team.keys())
+    writer.writerow(new_team)
+
+# reading from a csv file
+keys = ["name", "position", "points", "played games", "goal average"]
+with open("football.csv", "r") as f:
+    reader = csv.DictReader(f, keys)
+    for row in reader:
+        if row not in teams:
+            teams.append(row)
+print(*teams, sep="\n")
