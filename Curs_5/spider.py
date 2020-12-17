@@ -34,19 +34,26 @@ with open("football.csv", "w") as f:
         writer.writerow(team)
 
 # append to a csv file
+# read a new team and add it to the csv file
+# add information to the csv file
+keys = ["name", "position", "points", "played games", "goal average"]
 with open("football.csv", "a") as f:
-    new_team = {
-        "name": "FC Petrolul Ploiesti",
-        "position": 2,
-        "points": 25,
-        "played games": 12,
-        "goal average": 6
-    }
-    writer = csv.DictWriter(f, new_team.keys())
-    writer.writerow(new_team)
+    print("Write \"read\" if you want to read a team or \"quit\" if you want to stop reading teams")
+    while 1:
+        command = input()
+        if command == "read":
+            new_team = {}
+            print("This is the information of a team", keys)
+            values = [x for x in input().split(",")]
+            for i in range(len(values)):
+                new_team[keys[i]] = values[i]
+            writer = csv.DictWriter(f, new_team.keys())
+            writer.writerow(new_team)
+            print("Team added to the csv file")
+        elif command == "quit":
+            break
 
 # reading from a csv file
-keys = ["name", "position", "points", "played games", "goal average"]
 with open("football.csv", "r") as f:
     reader = csv.DictReader(f, keys)
     for row in reader:
