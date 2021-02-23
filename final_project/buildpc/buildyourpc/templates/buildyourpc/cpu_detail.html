@@ -1,0 +1,32 @@
+{% extends 'buildyourpc/base.html' %}
+
+{% block title %}
+    CPU detail
+{% endblock %}
+
+{% block content %}
+    <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+                <tr>
+                    <th><strong>Name</strong></th>
+                    <th><strong>Socket</strong></th>
+                    <th><strong>Manufacturer</strong></th>
+                    <th><strong>Frequency</strong></th>
+                    <th><strong>Cores</strong></th>
+                    <th><strong>Price</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ socket }}</td>
+                    <td>{{ manufacturer }}</td>
+                    <td>{{ frequency }} GHz</td>
+                    <td>{{ cores }}</td>
+                    <td>{{ price }} lei</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

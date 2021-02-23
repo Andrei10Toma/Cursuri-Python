@@ -1,0 +1,17 @@
+{% extends 'buildyourpc/base_list.html' %}
+{% block title %}
+    CPU list
+{% endblock %}
+
+{% block header %}
+    CPU list
+{% endblock %}
+{% block rows %}
+    {% for cpu in all_cpus %}
+        <tr>
+            <td><a href="{{ cpu.id }}">{{ cpu.name }}</a></td>
+            <td>{{ cpu.price }} lei</td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}

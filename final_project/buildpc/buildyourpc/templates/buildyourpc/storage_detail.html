@@ -1,0 +1,30 @@
+{% extends 'buildyourpc/base.html' %}
+
+{% block title %}
+    Storage detail
+{% endblock %}
+
+{% block content %}
+    <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+                <tr>
+                    <th><strong>Name</strong></th>
+                    <th><strong>Type</strong></th>
+                    <th><strong>Capacity</strong></th>
+                    <th><strong>Interface</strong></th>
+                    <th><strong>Price</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ type }}</td>
+                    <td>{{ capacity }} GB</td>
+                    <td>{{ interface }}</td>
+                    <td>{{ price }} lei</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

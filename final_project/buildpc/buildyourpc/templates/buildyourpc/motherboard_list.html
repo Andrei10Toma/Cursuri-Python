@@ -1,0 +1,17 @@
+{% extends 'buildyourpc/base_list.html' %}
+{% block title %}
+    Motherboard list
+{% endblock %}
+
+{% block header %}
+    Motherboard list
+{% endblock %}
+{% block rows %}
+    {% for motherboard in all_motherboards %}
+        <tr>
+            <td><a href="{{ motherboard.id }}">{{ motherboard.name }}</a></td>
+            <td>{{ motherboard.price }} lei</td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}

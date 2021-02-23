@@ -1,0 +1,19 @@
+{% extends 'buildyourpc/base.html' %}
+
+{% block content %}
+    <h2>{% block header %}{% endblock %}</h2>
+    <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% block rows %}
+            {% endblock %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

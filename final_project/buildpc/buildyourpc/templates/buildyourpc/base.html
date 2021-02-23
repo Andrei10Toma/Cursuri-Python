@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/table_style.css' %}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+<div class="w3-sidebar w3-bar-block w3-black w3-animate-left" style="display: none" id="sidebar">
+    <button class="w3-bar-item w3-button w3-large" onclick="w3_close()">Close &times;</button>
+    <a href="{% url 'home' %}" class="w3-bar-item w3-button">Home</a>
+    <a href="{% url 'motherboards' %}" class="w3-bar-item w3-button">Motherboards</a>
+    <a href="{% url 'cpus' %}" class="w3-bar-item w3-button">CPUs</a>
+    <a href="{% url 'gpus' %}" class="w3-bar-item w3-button">GPUs</a>
+    <a href="{% url 'storages' %}" class="w3-bar-item w3-button">Storages</a>
+    <a href="{% url 'ram_memories' %}" class="w3-bar-item w3-button">RAM Memories</a>
+</div>
+<div>
+    <button class="w3-button w3-blue w3-xxlarge" onclick="w3_open()">&#9776;</button>
+</div>
+<script>
+    function w3_open() {
+        document.getElementById("sidebar").style.display = "block";
+    }
+
+    function w3_close() {
+        document.getElementById("sidebar").style.display = "none";
+    }
+</script>
+<div class="w3-container" id="content" style="margin-left: 30px">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

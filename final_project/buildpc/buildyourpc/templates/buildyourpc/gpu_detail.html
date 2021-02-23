@@ -1,0 +1,26 @@
+{% extends 'buildyourpc/base.html' %}
+
+{% block title %}
+    GPU detail
+{% endblock %}
+
+{% block content %}
+     <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+                <tr>
+                    <th><strong>Name</strong></th>
+                    <th><strong>Memory</strong></th>
+                    <th><strong>Price</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ gpu_memory }} GB</td>
+                    <td>{{ price }} lei</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

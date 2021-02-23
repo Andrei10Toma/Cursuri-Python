@@ -1,0 +1,17 @@
+{% extends 'buildyourpc/base_list.html' %}
+{% block title %}
+    RAM memory list
+{% endblock %}
+
+{% block header %}
+    RAM memory list
+{% endblock %}
+{% block rows %}
+    {% for ram_memories in all_ram_memories %}
+        <tr>
+            <td><a href="{{ ram_memories.id }}">{{ ram_memories.name }}</a></td>
+            <td>{{ ram_memories.price }} lei</td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}

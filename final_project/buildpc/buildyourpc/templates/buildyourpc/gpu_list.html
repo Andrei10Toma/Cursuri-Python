@@ -1,0 +1,17 @@
+{% extends 'buildyourpc/base_list.html' %}
+{% block title %}
+    GPU list
+{% endblock %}
+
+{% block header %}
+    GPU list
+{% endblock %}
+{% block rows %}
+    {% for gpu in all_gpus %}
+        <tr>
+            <td><a href="{{ gpu.id }}">{{ gpu.name }}</a></td>
+            <td>{{ gpu.price }} lei</td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}

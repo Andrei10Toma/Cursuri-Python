@@ -1,0 +1,20 @@
+{% extends 'buildyourpc/base.html' %}
+
+{% block title %}
+    Homepage
+{% endblock %}
+
+{% block content %}
+    <h2>Welcome to the online pc builder!</h2>
+    <div>
+        <p>Here we will try to help you to build your PC from 0.</p>
+        <p>Right now, the web app has:</p>
+        <ul class="w3-ul">
+            <li class="w3-hover-black"><a href="{% url 'motherboards' %}">Motherboards</a> - {{ num_motherboards }} products.</li>
+            <li class="w3-hover-black"><a href="{% url 'cpus' %}">CPUs</a> - {{ num_cpus }} products.</li>
+            <li class="w3-hover-black"><a href="{% url 'gpus' %}">GPUs</a> - {{ num_gpus }} products.</li>
+            <li class="w3-hover-black"><a href="{% url 'ram_memories' %}">RAM memory</a> - {{ num_ram_memory }} products.</li>
+            <li class="w3-hover-black"><a href="{% url 'storages' %}">Storage</a> - {{ num_storages }} products.</li>
+        </ul>
+    </div>
+{% endblock %}

@@ -8,6 +8,6 @@
 <p><strong>Summary:</strong> {{ book.summary }}</p>
 <p><strong>ISBN:</strong> {{ book.isbn }}</p>
 <p><strong>Language:</strong> {{ book.language }}</p>
-<p><strong>Genre:</strong> {{ book.genre.all|join:", " }}</p>
+<p><strong>Genre:</strong> {{ book.genre.all.join(", ") }}</p>
 
 {% endblock %}
