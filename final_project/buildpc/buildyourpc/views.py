@@ -1,5 +1,51 @@
 from django.shortcuts import render
 from .models import *
+from .forms import ComputerForm
+from django.http import HttpResponseRedirect
+
+
+def computer_build(response):
+    built_pc = None
+    form = ComputerForm(response.POST or None)
+    data = dict(response.POST)
+    print(data)
+    context = {
+        'form': form
+    }
+    if form.is_valid():
+        if response.POST.get('next'):
+            for computer in Computer.objects.all():
+                if computer.name == data.get('name')[0]:
+                    built_pc = computer
+                    break
+            if built_pc is None:
+                built_pc = Computer(name=data.get('name')[0],
+                                    motherboard=Motherboard.objects.get(id=response.POST.get('motherboard')),
+                                    cpu=CPU.objects.get(id=response.POST.get('cpu')),
+                                    gpu=GPU.objects.get(id=response.POST.get('gpu')))
+                built_pc.save()
+                built_pc.ram_memory.add(*data.get('ram_memory'))
+                built_pc.storage.add(*data.get('storage'))
+            context['built_pc'] = built_pc
+            if len(data) > 8:
+                for ram_memory in built_pc.ram_memory.all():
+                    if ram_memory.name in data.keys():
+                        built_pc.ram_quantity[ram_memory.id] = data.get(ram_memory.name)
+                    else:
+                        built_pc.ram_quantity[ram_memory.id] = 0
+                for storage in built_pc.storage.all():
+                    if storage.name in data.keys():
+                        built_pc.storage_quantity[storage.id] = data.get(storage.name)
+                    else:
+                        built_pc.storage_quantity[storage.id] = 0
+                context['form'] = ComputerForm()
+                context['built_pc'] = None
+                print(built_pc.ram_quantity)
+                print(built_pc.storage_quantity)
+                print(built_pc.total_price)
+                built_pc.save()
+                return HttpResponseRedirect('/buildyourpc/computers/')
+    return render(response, 'buildyourpc/computer_build.html', context=context)
 
 
 def home(response):
@@ -35,6 +81,18 @@ def gpus(response):
         'all_gpus': all_gpus
     }
     return render(response, 'buildyourpc/gpu_list.html', context=context)
+
+
+def computers(response):
+    all_computers = Computer.objects.all()
+    all_total_prices = {}
+    for computer in all_computers:
+        all_total_prices[computer.id] = computer.total_price
+    context = {
+        'all_computers': all_computers,
+        'all_total_prices': all_total_prices,
+    }
+    return render(response, 'buildyourpc/computer_list.html', context=context)
 
 
 def ram_memories(response):
@@ -112,3 +170,29 @@ def ram_memory_detail(response, ram_id):
         'price': ram_memory.price,
     }
     return render(response, 'buildyourpc/ram_memory_detail.html', context=context)
+
+
+def computer_detail(response, computer_id):
+    name = Computer.objects.get(id=computer_id).name
+    motherboard = Computer.objects.get(id=computer_id).motherboard
+    cpu = Computer.objects.get(id=computer_id).cpu
+    gpu = Computer.objects.get(id=computer_id).gpu
+    all_ram_memory = Computer.objects.get(id=computer_id).ram_memory.all()
+    all_storage = Computer.objects.get(id=computer_id).storage.all()
+    ram_quantity = Computer.objects.get(id=computer_id).ram_quantity
+    storage_quantity = Computer.objects.get(id=computer_id).storage_quantity
+    total_price = Computer.objects.get(id=computer_id).total_price
+    print(ram_quantity)
+    print(storage_quantity)
+    context = {
+        'name': name,
+        'motherboard': motherboard,
+        'cpu': cpu,
+        'gpu': gpu,
+        'all_ram_memory': all_ram_memory,
+        'all_storage': all_storage,
+        'ram_quantity': ram_quantity,
+        'storage_quantity': storage_quantity,
+        'total_price': total_price,
+    }
+    return render(response, 'buildyourpc/computer_detail.html', context=context)

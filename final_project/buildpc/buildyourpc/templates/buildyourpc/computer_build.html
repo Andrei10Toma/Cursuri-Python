@@ -1,0 +1,22 @@
+{% extends 'buildyourpc/base.html' %}
+
+{% block title %}
+    Build PC
+{% endblock %}
+
+{% block content %}
+    <form method="POST"> {% csrf_token %}
+        {{ form.as_p }}
+        {% if built_pc %}
+            {% for ram_memory in built_pc.ram_memory.all %}
+                <label for="{{ ram_memory.id }}">{{ ram_memory.name }} quantity</label><br>
+                <input type="number" id="{{ ram_memory.id }}" name="{{ ram_memory.name }}"><br><br>
+            {% endfor %}
+            {% for storage in built_pc.storage.all %}
+                <label for="{{ storage.id }}">{{ storage.name }} quantity</label><br>
+                <input type="number" id="{{ storage.id }}" name="{{ storage.name }}"><br><br>
+            {% endfor %}
+        {% endif %}
+        <button type="submit" name="next" value="next">Next</button>
+    </form>
+{% endblock %}

@@ -7,6 +7,7 @@
         {% endblock %}
     </title>
     {% load static %}
+    {% load filters %}
     <link rel="stylesheet" href="{% static 'css/table_style.css' %}">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
@@ -19,6 +20,8 @@
     <a href="{% url 'gpus' %}" class="w3-bar-item w3-button">GPUs</a>
     <a href="{% url 'storages' %}" class="w3-bar-item w3-button">Storages</a>
     <a href="{% url 'ram_memories' %}" class="w3-bar-item w3-button">RAM Memories</a>
+    <a href="{% url 'computer_build' %}" class="w3-bar-item w3-button">Build PC</a>
+    <a href="{% url 'computers' %}" class="w3-bar-item w3-button">Built Computers</a>
 </div>
 <div>
     <button class="w3-button w3-blue w3-xxlarge" onclick="w3_open()">&#9776;</button>

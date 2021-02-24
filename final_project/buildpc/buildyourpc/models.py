@@ -125,13 +125,33 @@ class Storage(models.Model):
 class Computer(models.Model):
     name = models.CharField(
         max_length=200,
-        help_text='Name of the computer.'
+        help_text='Name of the computer.',
     )
     motherboard = models.ForeignKey(Motherboard, on_delete=models.CASCADE, null=True)
     cpu = models.ForeignKey(CPU, on_delete=models.CASCADE, null=True)
     gpu = models.ForeignKey(GPU, on_delete=models.CASCADE, null=True)
     ram_memory = models.ManyToManyField(MemoryRAM)
     storage = models.ManyToManyField(Storage)
+    ram_quantity = {}
+    storage_quantity = {}
+
+    @property
+    def has_compatible_components(self):
+        if self.motherboard.cpu_socket != self.cpu.socket:
+            return False
+        return True
+
+    @property
+    def total_price(self):
+        total_price_ram = 0
+        total_price_storage = 0
+        for ram_memory in self.ram_memory.all():
+            if ram_memory.id in self.ram_quantity.keys():
+                total_price_ram += ram_memory.price * float(self.ram_quantity.get(ram_memory.id)[0])
+        for storage in self.storage.all():
+            if storage.id in self.storage_quantity.keys():
+                total_price_storage += storage.price * float(self.storage_quantity.get(storage.id)[0])
+        return self.motherboard.price + self.cpu.price + self.gpu.price + total_price_storage + total_price_ram
 
     def __str__(self):
-        return str(self.name)
+        return self.name

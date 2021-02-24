@@ -1,0 +1,54 @@
+{% extends 'buildyourpc/base.html' %}
+
+{% block title %}
+    PC details
+{% endblock %}
+
+{% block content %}
+    <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+                <tr>
+                    <th><strong>Name</strong></th>
+                    <th><strong>Motherboard</strong></th>
+                    <th><strong>CPU</strong></th>
+                    <th><strong>GPU</strong></th>
+                    <th><strong>RAM memory</strong></th>
+                    <th><strong>Storage</strong></th>
+                    <th><strong>Price</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ name }}</td>
+                    <td><a href = "../motherboards/{{ motherboard.id }}">{{ motherboard.name }}</a></td>
+                    <td><a href = "../cpus/{{ cpu.id }}">{{ cpu.name }}</a></td>
+                    <td><a href = "../gpus/{{ gpu.id }}">{{ gpu.name }}</a></td>
+                    <td>
+                        {% for ram_memory in all_ram_memory %}
+                            <ul>
+                                {% for key, value in ram_quantity.items %}
+                                    {% if ram_memory.id == key %}
+                                        <li><a href="../rammemories/{{ ram_memory.id }}">{{ ram_memory.name }}</a>->{{ value }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for storage in all_storage %}
+                            <ul>
+                                {% for key, value in storage_quantity.items %}
+                                    {% if storage.id == key %}
+                                        <li><a href="../storages/{{ storage.id }}">{{ storage.name }}</a>->{{ value }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    </td>
+                    <td>{{ total_price }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

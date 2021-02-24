@@ -1,0 +1,18 @@
+{% extends 'buildyourpc/base_list.html' %}
+
+{% block title %}
+    Computer List
+{% endblock %}
+
+{% block header %}
+    Computer List
+{% endblock %}
+{% block rows %}
+    {% for computer in all_computers %}
+        <tr>
+            <td><a href="{{ computer.id }}" >{{ computer.name }}</a></td>
+            <td>{{ computer.total_price }}</td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}
