@@ -15,5 +15,5 @@ urlpatterns = [
     path('rammemories/<int:ram_id>', views.ram_memory_detail, name='ram_memory_detail'),
     path('buildpc/', views.computer_build, name='computer_build'),
     path('computers/', views.computers, name='computers'),
-    path('computers/<int:computer_id>', views.computer_detail, name='computer_detail')
+    path('computers/<int:computer_id>', views.computer_detail, name='computer_detail'),
 ]

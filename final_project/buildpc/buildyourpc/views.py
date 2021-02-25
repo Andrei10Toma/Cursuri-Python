@@ -5,10 +5,11 @@ from django.http import HttpResponseRedirect
 
 
 def computer_build(response):
+    storage_quantity = {}
+    ram_quantity = {}
     built_pc = None
     form = ComputerForm(response.POST or None)
     data = dict(response.POST)
-    print(data)
     context = {
         'form': form
     }
@@ -22,7 +23,7 @@ def computer_build(response):
                 built_pc = Computer(name=data.get('name')[0],
                                     motherboard=Motherboard.objects.get(id=response.POST.get('motherboard')),
                                     cpu=CPU.objects.get(id=response.POST.get('cpu')),
-                                    gpu=GPU.objects.get(id=response.POST.get('gpu')))
+                                    gpu=GPU.objects.get(id=response.POST.get('gpu')),)
                 built_pc.save()
                 built_pc.ram_memory.add(*data.get('ram_memory'))
                 built_pc.storage.add(*data.get('storage'))
@@ -30,21 +31,26 @@ def computer_build(response):
             if len(data) > 8:
                 for ram_memory in built_pc.ram_memory.all():
                     if ram_memory.name in data.keys():
-                        built_pc.ram_quantity[ram_memory.id] = data.get(ram_memory.name)
+                        ram_quantity[int(ram_memory.id)] = int(data.get(ram_memory.name)[0])
                     else:
-                        built_pc.ram_quantity[ram_memory.id] = 0
+                        ram_quantity[ram_memory.id] = 0
                 for storage in built_pc.storage.all():
                     if storage.name in data.keys():
-                        built_pc.storage_quantity[storage.id] = data.get(storage.name)
+                        storage_quantity[int(storage.id)] = int(data.get(storage.name)[0])
                     else:
-                        built_pc.storage_quantity[storage.id] = 0
+                        storage_quantity[storage.id] = 0
                 context['form'] = ComputerForm()
                 context['built_pc'] = None
-                print(built_pc.ram_quantity)
-                print(built_pc.storage_quantity)
-                print(built_pc.total_price)
+                built_pc.ram_quantity = ram_quantity
+                built_pc.storage_quantity = storage_quantity
                 built_pc.save()
-                return HttpResponseRedirect('/buildyourpc/computers/')
+                has_compatible_components, problems = built_pc.has_compatible_components()
+                if has_compatible_components:
+                    return HttpResponseRedirect('/buildyourpc/computers/')
+                else:
+                    built_pc.delete()
+                    context['problems'] = problems
+                    return render(response, 'buildyourpc/not_compatible.html', context=context)
     return render(response, 'buildyourpc/computer_build.html', context=context)
 
 
@@ -181,9 +187,7 @@ def computer_detail(response, computer_id):
     all_storage = Computer.objects.get(id=computer_id).storage.all()
     ram_quantity = Computer.objects.get(id=computer_id).ram_quantity
     storage_quantity = Computer.objects.get(id=computer_id).storage_quantity
-    total_price = Computer.objects.get(id=computer_id).total_price
-    print(ram_quantity)
-    print(storage_quantity)
+    total_price = str(Computer.objects.get(id=computer_id).total_price())
     context = {
         'name': name,
         'motherboard': motherboard,

@@ -1,0 +1,16 @@
+{% extends 'buildyourpc/base.html' %}
+
+{% block title %}
+    Components are incompatible
+{% endblock %}
+
+{% block content %}
+    <h2>Problems detected: {{ problems.count }}</h2>
+    <div class="w3-container">
+        <ul class="w3-ul">
+            {% for problem in problems %}
+                <li class="w3-hover-red">{{ problem }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

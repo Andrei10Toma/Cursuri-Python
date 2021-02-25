@@ -123,6 +123,7 @@ class Storage(models.Model):
 
 
 class Computer(models.Model):
+
     name = models.CharField(
         max_length=200,
         help_text='Name of the computer.',
@@ -132,25 +133,97 @@ class Computer(models.Model):
     gpu = models.ForeignKey(GPU, on_delete=models.CASCADE, null=True)
     ram_memory = models.ManyToManyField(MemoryRAM)
     storage = models.ManyToManyField(Storage)
-    ram_quantity = {}
-    storage_quantity = {}
+    ram_quantity = models.JSONField(default=dict)
+    storage_quantity = models.JSONField(default=dict)
 
-    @property
     def has_compatible_components(self):
-        if self.motherboard.cpu_socket != self.cpu.socket:
-            return False
-        return True
+        problems = []
+        is_compatible = True
+        is_compatible = self.same_socket(is_compatible, problems)
+        is_compatible = self.same_memory_type_motherboard(is_compatible, problems)
+        is_compatible = self.check_ram_total_memory(is_compatible, problems)
+        is_compatible = self.check_number_of_ram_memories(is_compatible, problems)
+        is_compatible = self.check_storage_slots(is_compatible, problems)
+        is_compatible = self.same_ram_memory_type_and_frequency(is_compatible, problems)
+        return is_compatible, problems
 
-    @property
+    def same_ram_memory_type_and_frequency(self, is_compatible, problems):
+        for ram_memory_1 in self.ram_memory.all():
+            for ram_memory_2 in self.ram_memory.all():
+                if ram_memory_1.memory_type != ram_memory_2.memory_type:
+                    problems.append(f'RAM memory should be of the same type. {ram_memory_1.memory_type} '
+                                    f'and {ram_memory_2.memory_type}')
+                    is_compatible = False
+                if ram_memory_1.frequency != ram_memory_2.frequency:
+                    problems.append(f'RAM memory should have the same frequency. {ram_memory_1.frequency}'
+                                    f' and {ram_memory_2.frequency}')
+                    is_compatible = False
+        return is_compatible
+
+    def check_storage_slots(self, is_compatible, problems):
+        if self.number_of_storage() > self.motherboard.sata_slots:
+            is_compatible = False
+            problems.append(f'Motherboard has {self.motherboard.sata_slots} slots for HDD or SSD and you selected'
+                            f' {self.number_of_storage()} products.')
+        return is_compatible
+
+    def check_number_of_ram_memories(self, is_compatible, problems):
+        if self.number_of_ram() > self.motherboard.memory_slots:
+            problems.append(f'Motherboard has {self.motherboard.memory_slots} slots and you selected'
+                            f' {self.number_of_ram()} products.')
+            is_compatible = False
+        return is_compatible
+
+    def check_ram_total_memory(self, is_compatible, problems):
+        if self.ram_total_memory() > self.motherboard.max_memory:
+            problems.append(f'Motherboard has a maximum of {self.motherboard.max_memory} GB and the '
+                            f'sum of all memory ram is {self.ram_total_memory()} GB')
+            is_compatible = False
+        return is_compatible
+
+    def same_memory_type_motherboard(self, is_compatible, problems):
+        for ram_memory in self.ram_memory.all():
+            if ram_memory.memory_type != self.motherboard.memory_type:
+                problems.append(f'Motherboard and RAM memory should have the same memory type RAM has '
+                                f'{ram_memory.memory_type} and the motherboard has {self.motherboard.memory_type}')
+                is_compatible = False
+        return is_compatible
+
+    def same_socket(self, is_compatible, problems):
+        if self.motherboard.cpu_socket != self.cpu.socket:
+            problems.append(f'Motherboard and CPU must have the same socket. The motherboard has '
+                            f'{self.motherboard.cpu_socket} and the CPU {self.cpu.socket}')
+            is_compatible = False
+        return is_compatible
+
+    def number_of_ram(self):
+        total_quantity = 0
+        for quantity in self.ram_quantity.values():
+            total_quantity += int(quantity)
+        return total_quantity
+
+    def number_of_storage(self):
+        total_storage = 0
+        for quantity in self.storage_quantity.values():
+            total_storage += int(quantity)
+        return total_storage
+
+    def ram_total_memory(self):
+        total_memory_ram = 0
+        for ram_memory in self.ram_memory.all():
+            if ram_memory.id in self.ram_quantity.keys():
+                total_memory_ram += ram_memory.capacity * float(self.ram_quantity.get(ram_memory.id))
+        return total_memory_ram
+
     def total_price(self):
         total_price_ram = 0
         total_price_storage = 0
         for ram_memory in self.ram_memory.all():
-            if ram_memory.id in self.ram_quantity.keys():
-                total_price_ram += ram_memory.price * float(self.ram_quantity.get(ram_memory.id)[0])
+            if str(ram_memory.id) in self.ram_quantity.keys():
+                total_price_ram += ram_memory.price * float(self.ram_quantity.get(str(ram_memory.id)))
         for storage in self.storage.all():
-            if storage.id in self.storage_quantity.keys():
-                total_price_storage += storage.price * float(self.storage_quantity.get(storage.id)[0])
+            if str(storage.id) in self.storage_quantity.keys():
+                total_price_storage += storage.price * float(self.storage_quantity.get(str(storage.id)))
         return self.motherboard.price + self.cpu.price + self.gpu.price + total_price_storage + total_price_ram
 
     def __str__(self):

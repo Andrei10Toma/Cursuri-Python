@@ -8,4 +8,4 @@ class ComputerForm(forms.ModelForm):
 
     class Meta:
         model = Computer
-        fields = '__all__'
+        exclude = ['ram_quantity', 'storage_quantity']

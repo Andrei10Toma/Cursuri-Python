@@ -28,7 +28,7 @@
                         {% for ram_memory in all_ram_memory %}
                             <ul>
                                 {% for key, value in ram_quantity.items %}
-                                    {% if ram_memory.id == key %}
+                                    {% if ram_memory.id == key|add:"0" %}
                                         <li><a href="../rammemories/{{ ram_memory.id }}">{{ ram_memory.name }}</a>->{{ value }}</li>
                                     {% endif %}
                                 {% endfor %}
@@ -39,7 +39,7 @@
                         {% for storage in all_storage %}
                             <ul>
                                 {% for key, value in storage_quantity.items %}
-                                    {% if storage.id == key %}
+                                    {% if storage.id == key|add:"0" %}
                                         <li><a href="../storages/{{ storage.id }}">{{ storage.name }}</a>->{{ value }}</li>
                                     {% endif %}
                                 {% endfor %}
